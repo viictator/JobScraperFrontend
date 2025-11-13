@@ -20,6 +20,10 @@ export default function JobsPage() {
         window.location.replace('/login');
     };
 
+    const handleViewJob = (jobId) => {
+        window.location.href = `/jobs/${jobId}`;
+    }
+
     const fetchJobs = async () => {
         setLoading(true);
         setError(null);
@@ -71,7 +75,7 @@ export default function JobsPage() {
 
     useEffect(() => {
         fetchJobs();
-    }, []);
+    },[]);
 
     const toggleExpand = (idx) => {
         setExpanded((prev) => ({ ...prev, [idx]: !prev[idx] }));
@@ -107,21 +111,13 @@ export default function JobsPage() {
 
     // --- Main Render ---
     return (
-        <main className="min-h-screen bg-[#0f0f0f] px-6 py-12 flex flex-col items-center">
-            <div className="w-full max-w-7xl flex justify-between items-center mb-10">
-                <h1 className="text-4xl font-bold text-white text-center flex items-center justify-center gap-2">
-                    Job Listings
-                    <span className="text-lg text-gray-400">({jobs.length})</span>
-                </h1>
-                <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-150 shadow-md"
-                >
-                    Logout
-                </button>
-            </div>
+        <>
+            <main className="bg-white h-screen w-full flex flex-col items-center">
+                <h1 className="text-[#1A1A1A] text-4xl font-black pt-8">{jobs.length} Jobs</h1>
+                <h3 className="text-[#1A1A1A] text-lg font-medium pb-8">currently scraped.</h3>
 
-            {error && (
+            
+                {error && (
                 <div className="bg-red-900 bg-opacity-30 border border-red-700 text-red-300 p-4 rounded-md mb-6 w-full max-w-7xl text-center">
                     {error}
                 </div>
@@ -134,7 +130,8 @@ export default function JobsPage() {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full max-w-7xl">
+
+            <div className="flex flex-col gap-8 w-2xl">
                 {sortedJobs.map((job, idx) => {
                     const isExpanded = expanded[idx];
                     const description = job.description || '';
@@ -142,26 +139,27 @@ export default function JobsPage() {
 
                     return (
                         <div 
+                            onClick={() => handleViewJob(job.id)}
                             key={idx}
-                            className="bg-[#1c1c1c] rounded-lg shadow-xl p-6 text-white border border-gray-800 flex flex-col justify-between h-full hover:border-blue-500 transition-all duration-300"
+                            className="bg-[#F7F8FA] items-center text-center cursor-pointer rounded-lg shadow-xl p-6 text-[#1A1A1A] border-2 border-[#1A1A1A] flex flex-col hover:border-blue-500 transition-all duration-300"
                         >
                             <a
                                 href={job.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex flex-col flex-grow text-left"
+                                className="flex flex-col flex-grow"
                             >
                                 <h2 className="text-xl font-semibold mb-2 hover:text-blue-400 transition-colors duration-150">{job.jobTitle}</h2>
-                                <p className="mb-1 text-gray-300 font-medium">{job.companyName}</p>
-                                <p className="mb-1 text-sm text-gray-400 flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <p className="mb-1 font-medium">{job.companyName}</p>
+                                <p className="mb-1 text-sm flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     {job.location} &middot; {job.contract}
                                 </p>
-                                <p className="text-xs text-gray-500 mb-4 flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <p className="text-xs mb-4 flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     {job.time}
@@ -169,8 +167,8 @@ export default function JobsPage() {
                             </a>
 
                             {description && (
-                                <div className="text-sm text-gray-300 mt-2">
-                                    <p className="whitespace-pre-line text-left">
+                                <div className="text-sm mt-2 max-w-[50%] text-center">
+                                    <p className="whitespace-pre-line">
                                         {isExpanded ? description : `${preview}${description.length > 160 ? '...' : ''}`}
                                     </p>
                                     {description.length > 160 && (
@@ -190,6 +188,11 @@ export default function JobsPage() {
                     );
                 })}
             </div>
-        </main>
-    );
+
+
+
+            </main>
+        </>
+        
+    )
 }
