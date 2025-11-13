@@ -166,7 +166,7 @@ export default function JobsPage() {
                                 </p>
                             </a>
 
-                            {description && (
+                            {/* {description && (
                                 <div className="text-sm mt-2 max-w-[50%] text-center">
                                     <p className="whitespace-pre-line">
                                         {isExpanded ? description : `${preview}${description.length > 160 ? '...' : ''}`}
@@ -183,7 +183,7 @@ export default function JobsPage() {
                                         </button>
                                     )}
                                 </div>
-                            )}
+                            )} */}
                         </div>
                     );
                 })}
