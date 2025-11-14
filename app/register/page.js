@@ -5,20 +5,20 @@ import Image from 'next/image'
 const BACKGROUND_IMAGE_SRC = '/bg.png';
 
 
-export default function LoginPage() {
+export default function RegisterPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleLogin = async (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         setError('');
         setIsLoading(true);
 
         try {
             // 1. Send the request to the new JWT login endpoint
-            const response = await fetch('http://localhost:8080/api/auth/login', {
+            const response = await fetch('http://localhost:8080/api/public/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export default function LoginPage() {
                   priority
                 />
             <div className="bg-transparent p-8 rounded-xl shadow-2xl w-full max-w-md bg-blur z-10">
-                <h2 className="text-3xl font-bold text-[#1A1A1A] mb-6 text-center">Login</h2>
+                <h2 className="text-3xl font-bold text-[#1A1A1A] mb-6 text-center">Register</h2>
 
                 {error && (
                     <div className="bg-red-900 bg-opacity-30 border border-red-700 text-red-300 p-3 rounded-md mb-4 text-sm text-center">
@@ -71,7 +71,7 @@ export default function LoginPage() {
                     </div>
                 )}
 
-                <form onSubmit={handleLogin} className="space-y-6">
+                <form onSubmit={handleRegister} className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-[#1A1A1A] mb-1">Username</label>
                         <input
@@ -114,7 +114,7 @@ export default function LoginPage() {
                                 Logging In...
                             </span>
                         ) : (
-                            'Log In'
+                            'Register'
                         )}
                     </button>
                 </form>

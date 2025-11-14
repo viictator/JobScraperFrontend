@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-// We need 'next/navigation' for client-side redirection
 import { useRouter } from 'next/navigation';
 
 export default function JobsPage() {
@@ -9,14 +8,10 @@ export default function JobsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [expanded, setExpanded] = useState({});
-    const router = useRouter(); // Initialize router for redirection
-
-    // --- Handlers ---
+    const router = useRouter();
 
     const handleLogout = () => {
-        // 1. JWT Logout: Remove the token from localStorage
         localStorage.removeItem('jwtToken');
-        // 2. Redirect to login page
         window.location.replace('/login');
     };
 
@@ -28,33 +23,26 @@ export default function JobsPage() {
         setLoading(true);
         setError(null);
 
-        // 1. Get the JWT from localStorage
         const jwtToken = localStorage.getItem('jwtToken');
-
-        // 2. Check for token and redirect if missing
         if (!jwtToken) {
-            // Use window.location.replace for a full client-side redirect
             window.location.replace('/login');
-            return; // Stop execution
+            return;
         }
 
         try {
             const response = await fetch('http://localhost:8080/api/user/jobs', {
                 method: 'GET',
                 headers: {
-                    // 3. CRITICAL: Pass the JWT in the Authorization Bearer header
                     'Authorization': `Bearer ${jwtToken}`,
                     'Content-Type': 'application/json',
                 },
-                // IMPORTANT: Do NOT include credentials: 'include' for JWT
             });
 
             if (response.ok) {
                 const data = await response.json();
                 setJobs(data);
             } else if (response.status === 401 || response.status === 403) {
-                // If the JWT is invalid, expired, or doesn't have the 'USER' role
-                handleLogout(); // Clear token and redirect to login
+                handleLogout();
                 return;
             } else {
                 throw new Error(`Failed to fetch jobs with status ${response.status}.`);
@@ -71,17 +59,14 @@ export default function JobsPage() {
         }
     };
 
-    // --- Effects & Logic ---
-
     useEffect(() => {
         fetchJobs();
-    },[]);
+    }, []);
 
     const toggleExpand = (idx) => {
         setExpanded((prev) => ({ ...prev, [idx]: !prev[idx] }));
     };
 
-    // Helper function to convert time string to a numeric "days ago" value
     const parseDaysAgo = (timeStr) => {
         if (!timeStr) return Number.MAX_SAFE_INTEGER;
         const lower = timeStr.toLowerCase();
@@ -91,16 +76,13 @@ export default function JobsPage() {
         return Number.MAX_SAFE_INTEGER;
     };
 
-    const sortedJobs = [...jobs].sort((a, b) => {
-        return parseDaysAgo(a.time) - parseDaysAgo(b.time);
-    });
+    const sortedJobs = [...jobs].sort((a, b) => parseDaysAgo(a.time) - parseDaysAgo(b.time));
 
-    // --- Loading and Error States ---
     if (loading)
         return (
-            <main className="min-h-screen bg-[#0f0f0f] flex items-center justify-center">
-                <p className="text-center text-gray-400 text-xl flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <main className="min-h-screen bg-[var(--background)] flex items-center justify-center">
+                <p className="text-center text-[var(--foreground)] text-xl flex items-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-[var(--primary)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -109,27 +91,23 @@ export default function JobsPage() {
             </main>
         );
 
-    // --- Main Render ---
     return (
-        <>
-            <main className="bg-white h-screen w-full flex flex-col items-center">
-                <h1 className="text-[#1A1A1A] text-4xl font-black pt-8">{jobs.length} Jobs</h1>
-                <h3 className="text-[#1A1A1A] text-lg font-medium pb-8">currently scraped.</h3>
+        <main className="bg-[var(--background)] pt-16 w-full flex flex-col items-center">
+            <h1 className="text-[var(--foreground)] text-4xl font-black pt-8">{jobs.length} Jobs</h1>
+            <h3 className="text-[var(--foreground)] text-lg font-medium pb-8">currently scraped.</h3>
 
-            
-                {error && (
-                <div className="bg-red-900 bg-opacity-30 border border-red-700 text-red-300 p-4 rounded-md mb-6 w-full max-w-7xl text-center">
+            {error && (
+                <div className="bg-red-700 bg-opacity-20 border border-red-600 text-red-600 p-4 rounded-md mb-6 w-full max-w-7xl text-center">
                     {error}
                 </div>
             )}
 
             {jobs.length === 0 && !error && (
-                <div className="flex items-center justify-center flex-col">
-                    <p className="text-gray-400">No jobs found.</p>
-                    <p className="text-gray-400">Try running the scraper again or check your backend connection.</p>
+                <div className="flex items-center justify-center flex-col text-[var(--foreground)]">
+                    <p>No jobs found.</p>
+                    <p>Try running the scraper again or check your backend connection.</p>
                 </div>
             )}
-
 
             <div className="flex flex-col gap-8 w-2xl">
                 {sortedJobs.map((job, idx) => {
@@ -138,18 +116,18 @@ export default function JobsPage() {
                     const preview = description.slice(0, 160);
 
                     return (
-                        <div 
+                        <div
                             onClick={() => handleViewJob(job.id)}
                             key={idx}
-                            className="bg-[#F7F8FA] items-center text-center cursor-pointer rounded-lg shadow-xl p-6 text-[#1A1A1A] border-2 border-[#1A1A1A] flex flex-col hover:border-blue-500 transition-all duration-300"
+                            className="bg-[var(--card)] text-[var(--card-foreground)] cursor-pointer rounded-lg shadow-xl p-6 border-2 border-[var(--foreground)] flex flex-col items-center hover:border-[var(--primary)] transition-all duration-300"
                         >
                             <a
                                 href={job.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex flex-col flex-grow"
+                                className="flex flex-col flex-grow items-center"
                             >
-                                <h2 className="text-xl font-semibold mb-2 hover:text-blue-400 transition-colors duration-150">{job.jobTitle}</h2>
+                                <h2 className="text-xl font-semibold mb-2 hover:text-[var(--primary)] transition-colors duration-150">{job.jobTitle}</h2>
                                 <p className="mb-1 font-medium">{job.companyName}</p>
                                 <p className="mb-1 text-sm flex items-center gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -165,34 +143,10 @@ export default function JobsPage() {
                                     {job.time}
                                 </p>
                             </a>
-
-                            {/* {description && (
-                                <div className="text-sm mt-2 max-w-[50%] text-center">
-                                    <p className="whitespace-pre-line">
-                                        {isExpanded ? description : `${preview}${description.length > 160 ? '...' : ''}`}
-                                    </p>
-                                    {description.length > 160 && (
-                                        <button
-                                            onClick={(e) => {
-                                                e.preventDefault(); // Prevent anchor navigation
-                                                toggleExpand(idx);
-                                            }}
-                                            className="mt-2 text-blue-400 hover:underline focus:outline-none text-xs font-medium"
-                                        >
-                                            {isExpanded ? 'Show less' : 'Show more'}
-                                        </button>
-                                    )}
-                                </div>
-                            )} */}
                         </div>
                     );
                 })}
             </div>
-
-
-
-            </main>
-        </>
-        
-    )
+        </main>
+    );
 }
