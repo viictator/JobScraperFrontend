@@ -51,7 +51,7 @@ export default function LoginPage() {
         className="object-cover opacity-15"
         priority
       />
-      <div className="bg-[var(--card)] bg-opacity-90 p-8 rounded-xl shadow-2xl w-full max-w-md backdrop-blur z-10">
+      <div className="bg-opacity-90 p-8 rounded-xl shadow-2xl w-full max-w-md backdrop-blur z-10">
         <h2 className="text-3xl font-bold text-[var(--foreground)] mb-6 text-center">
           Login
         </h2>
@@ -97,7 +97,7 @@ export default function LoginPage() {
             type="submit"
             isLoading={isLoading}
             disabled={isLoading || !username || !password}
-            className="w-full py-3 rounded-lg font-semibold shadow-lg text-[var(--primary-foreground)] transition duration-150"
+            className="w-full py-3 rounded-lg font-semibold shadow-lg transition duration-150"
           >
             Log In
           </LiquidButton>

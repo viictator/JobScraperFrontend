@@ -25,7 +25,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('jwtToken')
-    window.location.replace('/login')
+    window.location.replace('/')
   }
 
   const toggleDarkMode = () => {
@@ -64,7 +64,7 @@ const Navbar = () => {
           <li key={item.href}>
             <Link
               href={item.href}
-              className={`text-[var(--foreground)] hover:text-[var(--foreground)]/80 transition-colors ${
+              className={`text-[var(--foreground)] hover:text-[var(--foreground)]/80 transition-colors duration-300 ${
                 pathname === item.href ? 'underline' : ''
               }`}
             >
@@ -77,7 +77,7 @@ const Navbar = () => {
         <li>
           <button
             onClick={toggleDarkMode}
-            className="flex items-center justify-center w-10 h-10 p-1 rounded-full text-[var(--foreground)]"
+            className="flex items-center justify-center w-10 h-10 p-1 rounded-full text-[var(--foreground)] hover:text-[var(--foreground)]/80 cursor-pointer transition-colors duration-300"
             aria-label="Toggle dark mode"
           >
             {darkMode ? <SunIcon /> : <MoonIcon />}
@@ -89,7 +89,7 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         <button
           onClick={handleLogout}
-          className="text-[var(--foreground)] font-semibold"
+          className="text-[var(--foreground)] font-semibold cursor-pointer hover:text-[var(--foreground)]/80 transition-colors duration-300"
         >
           Logout
         </button>
