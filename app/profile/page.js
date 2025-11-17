@@ -51,6 +51,13 @@ export default function ProfilePage() {
     setError(null);
     const jwtToken = localStorage.getItem('jwtToken');
 
+    if (!jwtToken) {
+            window.location.replace('/login');
+            return;
+        }
+
+    
+
     try {
       const response = await fetch('http://localhost:8080/api/user/profile', {
         method: 'GET',
